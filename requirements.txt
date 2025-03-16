@@ -1,0 +1,7 @@
+instaloader  
+moviepy  
+opencv-python  
+numpy  
+pillow  
+requests  
+selenium  
