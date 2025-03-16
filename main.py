@@ -3,21 +3,28 @@ import openai
 
 print("Instagram bot is running!")
 
-api_key = os.getenv("OPENAI_API_KEY")  # Fetch API key from Railway
+# Load the API key from environment variables
+api_key = os.getenv("OPENAI_API_KEY")
 
-if api_key:
-    print("✅ API key loaded successfully!")
-    openai.api_key = api_key
+if not api_key:
+    print("Error: API key not found. Check Railway environment variables.")
+    exit(1)
 
-    # Test OpenAI API with a simple request
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "system", "content": "Say Hello!"}]
-        )
-        print("OpenAI Response:", response["choices"][0]["message"]["content"])
-    except Exception as e:
-        print("❌ OpenAI API Error:", e)
+# Initialize OpenAI client
+client = openai.OpenAI(api_key=api_key)
 
-else:
-    print("❌ Error: API key not found. Check Railway environment variables.")
+# Example prompt for AI-generated content
+try:
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",  # Change to "gpt-4" if needed
+        messages=[{"role": "system", "content": "You are an AI assistant."},
+                  {"role": "user", "content": "Generate a creative Instagram post idea."}]
+    )
+
+    # Print the response
+    post_content = response.choices[0].message.content
+    print("Generated Instagram Post:", post_content)
+
+except openai.OpenAIError as e:
+    print(f"❌ OpenAI API Error: {e}")
+
